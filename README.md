@@ -13,3 +13,38 @@ A production-grade, agentic AI platform for high-scale payments risk scoring (in
 - **Kafka Event-Driven** pipeline with proper deserialization and backpressure handling
 
 ## Architecture
++-------------------+
+|   REST / Kafka    |
+|  (Checkout Events)|
++---------+---------+
+|
+v
++------------------------+
+|  RiskScoringService    |
+|  (Kafka Listener)      |
++------------------------+
+|
+v
++------------------------+
+|  AgentEnsembleEngine   |
+|  (Concurrent Agents)   |
++------------------------+
+|
++-----------+-----------+
+|                       |
+v                       v
+FraudAgent             VelocityAgent + IdentityAgent
+\                       /
+\                     /
++-------------------+
+|
+v
++------------------------+
+|   AI Review Agent      |
+|  (Scheduled + Manual)  |
+|  RAG + LLM Facade      |
++------------------------+
+|
+v
+Structured Recommendations
+(5 Rules + 2-3 LLM Solutions + CI/CD Hooks)
