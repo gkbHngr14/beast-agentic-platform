@@ -1,6 +1,7 @@
 from langgraph.graph import StateGraph, END
 from typing import TypedDict
 from langchain_ollama import OllamaLLM
+from langgraph.checkpoint.memory import MemorySaver
 
 # Initialize once at top of file
 llm = OllamaLLM(model="llama3.2:3b")
@@ -83,6 +84,13 @@ def file_case(state: ReviewAgentState):
     print(f"Risk is medium — filing case and logging")
     return {"recommendation": state["recommendation"] + "\n[CASE-FILED]"}
 
+# Node 7: HITL checkpoint
+def human_review(state: ReviewAgentState):
+    print(f"\n--- HUMAN REVIEW REQUIRED ---")
+    print(f"Risk Assessment: {state['recommendation'][:50]}...")
+    print(f"Action: Flagged for compliance review")
+    return {"recommendation": state["recommendation"] + "\n[PENDING HUMAN REVIEW]"}
+
 # Build the graph actually now out of the agent state..!
 graph = StateGraph(ReviewAgentState)
 
@@ -90,21 +98,20 @@ graph = StateGraph(ReviewAgentState)
 graph.add_node("ingest_metrics", ingest_metrics)
 graph.add_node("retrieve_context", retrieve_context)
 graph.add_node("reason", reason)
+graph.add_node("escalate", escalate)
+graph.add_node("summarize", summarize)
+graph.add_node("file_case", file_case)
+graph.add_node("human_review", human_review)
 
 # Add edges
 graph.set_entry_point("ingest_metrics")
 graph.add_edge("ingest_metrics", "retrieve_context")
 graph.add_edge("retrieve_context", "reason")
 
-#graph.add_edge("reason", END)
-
-graph.add_node("escalate", escalate)
-graph.add_node("summarize", summarize)
-graph.add_node("file_case", file_case)
-
-graph.add_edge("escalate", END)
+graph.add_edge("escalate", "human_review")
 graph.add_edge("summarize", END)
 graph.add_edge("file_case", END)
+graph.add_edge("human_review", END)
 
 graph.add_conditional_edges(
     "reason",
