@@ -30,12 +30,13 @@ def run_eval():
     total = len(test_cases)
 
     for i, test in enumerate(test_cases):
+        config = {"configurable": {"thread_id": f"eval_{i}"}}
         result = app.invoke({
             "metrics": test["metrics"],
             "rag_context": test["rag_context"],
             "risk_score": 0.0,
             "recommendation": ""
-            })
+            }, config=config)
 
         actual = result["recommendation"].strip().split()[0].upper()
         expected = test["expected"]

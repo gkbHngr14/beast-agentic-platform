@@ -3,6 +3,8 @@ from typing import TypedDict
 from langchain_ollama import OllamaLLM
 from langgraph.checkpoint.memory import MemorySaver
 
+from langgraph.checkpoint.sqlite import SqliteSaver
+
 # Initialize once at top of file
 llm = OllamaLLM(model="llama3.2:3b")
 
@@ -123,16 +125,19 @@ graph.add_conditional_edges(
     }
 )
 
-# Compile
-app = graph.compile()
-
-# Run
+# For import by eval script:
+memory = MemorySaver()
+app = graph.compile(checkpointer=memory)
 
 if __name__ == "__main__":
-    result = app.invoke({
-      "metrics": {},
-      "rag_context": "",
-      "risk_score": 0.0,
-      "recommendation": ""
-    })
-    print(f"Final result: {result}")
+    # Use SqliteSaver for durable persistence
+    with SqliteSaver.from_conn_string("checkpoints.db") as sqlite_memory:
+        durable_app = graph.compile(checkpointer=sqlite_memory)
+        config = {"configurable": {"thread_id": "review_001"}}
+        result = durable_app.invoke({
+            "metrics": {},
+            "rag_context": "",
+            "risk_score": 0.0,
+            "recommendation": ""
+        }, config=config)
+        print(f"Final result: {result}")
