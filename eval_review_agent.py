@@ -16,6 +16,12 @@ test_cases = [
         "rag_context": "fraud_patterns: velocity abuse",
         "expected": "MEDIUM"
     },
+    # Add to test_cases:
+{
+    "metrics": {"latency": 200, "error_rate": 0.001, "throughput": 9500},
+    "rag_context": "normal_patterns: standard transaction",
+    "expected": "LOW"
+},
 ]
 
 # Eval harness
@@ -37,6 +43,9 @@ def run_eval():
 
         if passed:
             correct += 1
+
+        if not passed:
+            print(f"  → Expected {expected} but got {actual}")
 
         print(f"Test {i+1}: expected={expected}, actual={actual}, {'PASS' if passed else 'FAIL'}")
 
