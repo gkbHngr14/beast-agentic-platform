@@ -2,7 +2,7 @@
 
 **Real-time Fraud & Risk Decisioning Engine with Autonomous AI Review Agent**
 
-A production-grade, agentic AI platform for high-scale payments risk scoring (inspired by PayPal/Zelle-class systems). Built to demonstrate modern principal-level engineering: concurrent agents, RAG grounding, self-improving AI, observability, and safe CI/CD integration.
+A production-grade, agentic AI platform for high-scale payments risk scoring. Built to demonstrate modern principal-level engineering: concurrent agents, RAG grounding, self-improving AI, observability, and safe CI/CD integration.
 
 ## Key Capabilities
 - **Real-time Risk Scoring** using concurrent agent ensemble (Fraud + Velocity + Identity Agents)
