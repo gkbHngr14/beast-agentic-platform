@@ -52,39 +52,4 @@ A working enterprise-grade reference implementation, agentic AI platform for hig
           │ Decision / Human │
           │ Review / Action  │
           └──────────────────┘
-          
-+-------------------+
-|   REST / Kafka    |
-|  (Checkout Events)|
-+---------+---------+
-|
-v
-+------------------------+
-|  RiskScoringService    |
-|  (Kafka Listener)      |
-+------------------------+
-|
-v
-+------------------------+
-|  AgentEnsembleEngine   |
-|  (Concurrent Agents)   |
-+------------------------+
-|
-+-----------+-----------+
-|                       |
-v                       v
-FraudAgent             VelocityAgent + IdentityAgent
-\                       /
-\                     /
-+-------------------+
-|
-v
-+------------------------+
-|   AI Review Agent      |
-|  (Scheduled + Manual)  |
-|  RAG + LLM Facade      |
-+------------------------+
-|
-v
-Structured Recommendations
-(5 Rules + 2-3 LLM Solutions + CI/CD Hooks)
+
