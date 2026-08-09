@@ -2,7 +2,7 @@
 
 **Real-time Fraud & Risk Decisioning Engine with Autonomous AI Review Agent**
 
-A production-grade, agentic AI platform for high-scale payments risk scoring. Built to demonstrate modern principal-level engineering: concurrent agents, RAG grounding, self-improving AI, observability, and safe CI/CD integration.
+A working enterprise-grade reference implementation, agentic AI platform for high-scale payments risk scoring. Built to demonstrate modern principal-level engineering: concurrent agents, RAG grounding, self-improving AI, observability, and safe CI/CD integration.
 
 ## Key Capabilities
 - **Real-time Risk Scoring** using concurrent agent ensemble (Fraud + Velocity + Identity Agents)
@@ -13,6 +13,46 @@ A production-grade, agentic AI platform for high-scale payments risk scoring. Bu
 - **Kafka Event-Driven** pipeline with proper deserialization and backpressure handling
 
 ## Architecture
+                    ┌───────────────────────┐
+                    │   Financial Event     │
+                    │   / Risk Request      │
+                    └───────────┬───────────┘
+                                │
+                                ▼
+                    ┌───────────────────────┐
+                    │   Risk Decision API   │
+                    └───────────┬───────────┘
+                                │
+                     ┌──────────┴──────────┐
+                     ▼                     ▼
+             ┌──────────────┐      ┌──────────────┐
+             │ Agent         │      │ Policy /     │
+             │ Ensemble      │      │ ABAC         │
+             └──────┬───────┘      └──────────────┘
+                    │
+        ┌───────────┼───────────────┐
+        ▼           ▼               ▼
+     Fraud      Velocity        Identity
+       │           │               │
+       └───────────┼───────────────┘
+                   ▼
+          ┌──────────────────┐
+          │  Agentic Review  │
+          └────────┬─────────┘
+                   │
+        ┌──────────┼────────────┐
+        ▼          ▼            ▼
+    GraphRAG     MCP         Guardrails
+    OpenSearch   Gateway     NLI / PII
+    Neptune                  Evaluation
+        │          │            │
+        └──────────┼────────────┘
+                   ▼
+          ┌──────────────────┐
+          │ Decision / Human │
+          │ Review / Action  │
+          └──────────────────┘
+          
 +-------------------+
 |   REST / Kafka    |
 |  (Checkout Events)|
